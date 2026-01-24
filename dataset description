@@ -1,0 +1,27 @@
+# Dataset Information
+
+This project uses the NASA C-MAPSS (Commercial Modular Aero-Propulsion System Simulation) dataset
+for Remaining Useful Life (RUL) prediction of aircraft turbofan engines.
+
+## Dataset Source
+The dataset is provided by NASA and is publicly available.
+Due to size and licensing considerations, the raw dataset files are not included in this repository.
+
+Official source:
+https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
+
+## Sub-datasets Used
+- FD002: Multiple operating conditions, single fault mode
+- FD003: Single operating condition, multiple fault modes
+- FD004: Multiple operating conditions, multiple fault modes
+
+## Dataset Structure
+Each dataset contains:
+- Engine ID
+- Cycle number
+- Three operating condition variables
+- 21 sensor measurements
+
+## Usage
+Users should download the dataset from the official NASA repository and place the files locally
+before running the code.
