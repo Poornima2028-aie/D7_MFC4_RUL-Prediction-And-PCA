@@ -1,7 +1,5 @@
 %% ============================================================
-%% NASA CMAPSS Turbofan Engine RUL Prediction - FINAL VERSION
-%% Accuracy now calculated at ±40 cycles (as requested)
-%% Expected: ~95–98% at ±40, ~90–91% at ±25
+%% NASA CMAPSS Turbofan Engine RUL Prediction
 %% ============================================================
 clear; clc; close all;
 
