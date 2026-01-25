@@ -1,4 +1,4 @@
-# D7_MFC4_RobustPCA
+# D7_MFC4_RUL Prediction And PCA
 # Attention-Based RUL Prediction for Aircraft Turbofan Engines
 
 ## Team Members
