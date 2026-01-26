@@ -1,158 +1,96 @@
-Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines using PCA and Deep Learning
+# 🚀 D7_MFC4_RUL Prediction And PCA  
+## ✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines using PCA
 
-👥 Team Members
-Name	Roll Number	Email
-Poornima P	cb.sc.u4aie24343	poornimap@example.com
+## 📌 Project Title
 
-Ch. Sarvani Sruthi	cb.sc.u4aie24311	sarvani@example.com
+**Attention-Based Remaining Useful Life Prediction for Aircraft Turbofan Engines using PCA and Deep Learning**
 
-Shri Manasa	cb.sc.u4aie24356	manasa@example.com
+## 👥 Team Members
 
-Sowmya A	cb.sc.u4aie24357	sowmya@example.com
-🎯 Objective
+- **Poornima P** – cb.sc.u4aie24343 – poornimap@example.com  
+- **Ch. Sarvani Sruthi** – cb.sc.u4aie24311 – sarvani@example.com  
+- **Shri Manasa** – cb.sc.u4aie24356 – manasa@example.com  
+- **Sowmya A** – cb.sc.u4aie24357 – sowmya@example.com  
 
-The objective of this project is to predict the Remaining Useful Life (RUL) of aircraft turbofan engines using time-series sensor data. The project aims to:
+## 🎯 Objective
 
-Reduce unexpected engine failures
+The objective of this project is to predict the Remaining Useful Life (RUL) of aircraft turbofan engines using multivariate time-series sensor data. The aim is to enable predictive maintenance by estimating how long an engine can operate before failure, thereby improving safety, reducing downtime, and minimizing maintenance costs.
 
-Enable predictive maintenance
+## 💡 Motivation / Why the Project is Interesting
 
-Improve safety and reduce maintenance cost
+Aircraft engine maintenance is highly critical and expensive. Traditional maintenance strategies either replace components too early or too late, leading to increased costs or safety risks. This project is interesting because it uses real-world NASA engine degradation data and combines statistical dimensionality reduction with deep learning. PCA simplifies complex sensor data, while the attention mechanism allows the model to focus on the most critical degradation periods.
 
-Study the effectiveness of PCA as the sole feature-reduction technique combined with a deep learning model
+## 🛠️ Methodology
 
-💡 Motivation / Why This Project is Interesting
+### 📂 Dataset
 
-Aircraft engine failures are extremely costly and dangerous. Traditional maintenance approaches either replace parts too early or too late.
+The NASA C-MAPSS turbofan engine dataset is used in this project. It contains multivariate time-series sensor data collected from multiple engines operating under different conditions until failure. Experiments are conducted on FD002, FD003, and FD004 sub-datasets.
 
-This project is interesting because:
+### 🔄 Data Preprocessing
 
-It uses real NASA engine data
+- Normalization of sensor values  
+- Sliding window technique to convert time-series data into fixed-length sequences suitable for deep learning models  
 
-Combines statistical dimensionality reduction (PCA) with deep learning
+### 📉 Feature Reduction using PCA (Only)
 
-Uses an attention mechanism to focus on critical degradation periods
+Principal Component Analysis (PCA) is used as the **only feature reduction technique** in this project.
 
-Demonstrates how complex sensor data can be simplified using PCA without losing essential health information
-
-🛠 Methodology
-1️⃣ Dataset Used
-
-NASA C-MAPSS Turbofan Engine Dataset
-
-Sub-datasets: FD002, FD003, FD004
-
-Multivariate time-series sensor data until engine failure
-
-2️⃣ Data Preprocessing
-
-Removal of non-informative sensors
-
-Normalization of sensor values
-
-Sliding window approach to convert time-series data into sequences
-
-3️⃣ Feature Reduction using PCA (Only)
-
-Principal Component Analysis (PCA) is used as the only feature reduction technique in this project.
-
-Reduces high-dimensional sensor data
-
-Removes redundancy and noise
-
-Retains maximum variance (engine health information)
+- Reduces high-dimensional sensor data  
+- Removes redundancy and noise  
+- Retains maximum variance related to engine health  
 
 📌 No other sensor selection or filtering methods are used.
 
-🔢 Mathematical Technique: PCA (Simple Explanation)
+### 📐 Mathematical Technique Used – PCA
 
-Given a data matrix 
-𝑋
-X:
+PCA involves centering the data, computing the covariance matrix, extracting eigenvalues and eigenvectors, and projecting the original data onto the top principal components that capture maximum variance.
 
-Center the data
+### 🧸 Toy Example (PCA Demonstration)
 
-Compute covariance matrix
+Consider two highly correlated sensors:
 
-Calculate eigenvalues and eigenvectors
+- Sensor 1: [2, 3, 4]  
+- Sensor 2: [4, 6, 8]
 
-Project data onto top-k principal components
+PCA combines these two sensors into a single principal component that captures most of the information, reducing dimensionality while preserving the degradation trend.
 
-🧸 Toy Example (PCA)
+### 🧠 Model Architecture
 
-Suppose we have 2 sensors:
+The reduced PCA features are fed into a deep learning model consisting of **CNN + BiLSTM + Attention** layers.
 
-Sensor 1	Sensor 2
-2	4
-3	6
-4	8
+- **CNN (1D Convolution):** Extracts short-term degradation patterns  
+- **BiLSTM:** Captures long-term temporal dependencies in both forward and backward directions  
+- **Attention Layer:** Assigns higher importance to critical degradation time steps  
+- **Fully Connected Layer:** Predicts the Remaining Useful Life (RUL)
 
-These sensors are highly correlated.
+## 📊 Results and Discussion
 
-👉 PCA combines them into one principal component that captures most of the information, reducing dimensionality from 2 → 1.
+The model shows strong RUL prediction performance across all evaluated datasets. Predicted RUL values closely follow the true RUL trends. PCA effectively reduces sensor dimensionality while preserving important degradation information, and the attention mechanism improves prediction accuracy and interpretability.
 
-4️⃣ Model Architecture
+Evaluation metrics used:
+- RMSE  
+- MAE  
+- R² Score  
 
-The reduced PCA features are fed into a deep learning model:
+## 🔮 Future Plans
 
-CNN + BiLSTM + Attention
+- Deploy the PCA-based RUL prediction system in real aircraft maintenance scenarios  
+- Extend the approach to wind turbines, industrial machinery, and electric vehicle batteries  
+- Study robustness under noisy sensor conditions  
+- Develop a lightweight real-time monitoring system  
 
-CNN (1D Convolution):
-Extracts short-term degradation patterns
+## 📚 References
 
-BiLSTM:
-Captures long-term dependencies in both forward and backward directions
+1. Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008).  
+   *Damage propagation modeling for aircraft engine run-to-failure simulation*, NASA Ames Research Center.  
+   https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
 
-Attention Layer:
-Assigns higher importance to critical time steps related to engine failure
+2. Dida, M., Cheriet, A., & Belhadj, M. (2025).  
+   *Remaining Useful Life Prediction Using Attention-LSTM Neural Network of Aircraft Engines*.  
+   International Journal of Prognostics and Health Management.  
+   https://www.phmpapers.org
 
-Fully Connected Layer:
-Predicts the Remaining Useful Life (RUL)
-
-📊 Results & Discussion
-
-Predicted RUL values closely match actual RUL trends
-
-Low prediction error across different operating conditions
-
-PCA successfully reduces dimensionality while preserving degradation information
-
-Attention mechanism improves model interpretability by focusing on critical degradation stages
-
-Evaluation Metrics:
-
-RMSE
-
-MAE
-
-R² Score
-
-🚀 Future Plans
-
-Deploy PCA-based RUL prediction in real aircraft maintenance systems
-
-Apply the approach to:
-
-Wind turbines
-
-Industrial motors
-
-Electric vehicle batteries
-
-Study robustness of PCA under noisy sensor conditions
-
-Develop a lightweight real-time monitoring system
-
-📚 References
-
-NASA C-MAPSS Dataset
-https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
-
-Saxena et al. (2008), NASA Ames
-https://ti.arc.nasa.gov/m/project/prognostic-data-repository/
-
-Dida et al. (2025), IJPHM
-https://www.phmpapers.org
-
-Ferreira & Gonçalves (2022), Scientific Reports
-https://www.nature.com/articles/s41598-022-XXXXX
+3. Ferreira, L., & Gonçalves, R. (2022).  
+   *Remaining Useful Life Estimation Using Deep Learning and the NASA C-MAPSS Dataset*.  
+   Scientific Reports, Springer Nature.  
+   https://www.nature.com
