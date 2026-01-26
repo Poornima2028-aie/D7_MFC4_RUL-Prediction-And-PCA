@@ -1,88 +1,158 @@
-# D7_MFC4_RUL Prediction And PCA
-# Attention-Based RUL Prediction for Aircraft Turbofan Engines
+Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines using PCA and Deep Learning
 
-## Team Members
+👥 Team Members
+Name	Roll Number	Email
+Poornima P	cb.sc.u4aie24343	poornimap@example.com
 
-* **Poornima P** – cb.sc.u4aie24343
-* **Ch. Sarvani Sruthi** – cb.sc.u4aie24311
-* **Shri Manasa ** – cb.sc.u4aie24356
-* **Sowmya A** – cb.sc.u4aie24357
+Ch. Sarvani Sruthi	cb.sc.u4aie24311	sarvani@example.com
 
----
+Shri Manasa	cb.sc.u4aie24356	manasa@example.com
 
-## Base / Reference Papers
+Sowmya A	cb.sc.u4aie24357	sowmya@example.com
+🎯 Objective
 
-1. Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008). *Damage propagation modeling for aircraft engine run-to-failure simulation*. NASA Ames Research Center.
+The objective of this project is to predict the Remaining Useful Life (RUL) of aircraft turbofan engines using time-series sensor data. The project aims to:
 
-2. Dida, M., Cheriet, A., & Belhadj, M. (2025). *Remaining Useful Life Prediction Using Attention‑LSTM Neural Network of Aircraft Engines*. International Journal of Prognostics and Health Management.
+Reduce unexpected engine failures
 
-3. Ferreira, L., & Gonçalves, R. (2022). *Remaining Useful Life Estimation Using Deep Learning and the NASA C‑MAPSS Dataset*. Scientific Reports, Springer Nature.
+Enable predictive maintenance
 
----
+Improve safety and reduce maintenance cost
 
-## Project Outline
+Study the effectiveness of PCA as the sole feature-reduction technique combined with a deep learning model
 
-This project focuses on predictive maintenance of aircraft turbofan engines by estimating their Remaining Useful Life (RUL) using data-driven modeling techniques. The objective is to move beyond traditional reactive and schedule-based maintenance strategies by effectively utilizing sensor data collected during engine operation.
+💡 Motivation / Why This Project is Interesting
 
-The study uses the NASA C-MAPSS turbofan engine dataset, which consists of multivariate time-series sensor measurements recorded under different operating and fault conditions. The proposed approach aims to identify informative degradation patterns and accurately predict RUL by modeling temporal behavior in the sensor data.
+Aircraft engine failures are extremely costly and dangerous. Traditional maintenance approaches either replace parts too early or too late.
 
----
+This project is interesting because:
 
-## Methodology and Key Features
+It uses real NASA engine data
 
-* Data-driven sensor selection based on:
+Combines statistical dimensionality reduction (PCA) with deep learning
 
-  * Variance-based filtering
-  * Monotonicity measure
-  * Prognosability measure
-* Sliding window–based time-series formulation
-* Hybrid CNN–BiLSTM–Attention architecture for RUL prediction:
+Uses an attention mechanism to focus on critical degradation periods
 
-  * CNN layers for local temporal feature extraction
-  * Bidirectional LSTM for capturing long-term temporal dependencies
-  * Attention mechanism to emphasize critical degradation periods
-* Performance evaluation using RMSE, MAE, R² score, and tolerance-based accuracy
-* Implementation and result analysis carried out in both Python and MATLAB
+Demonstrates how complex sensor data can be simplified using PCA without losing essential health information
 
----
+🛠 Methodology
+1️⃣ Dataset Used
 
-## Model Architecture
+NASA C-MAPSS Turbofan Engine Dataset
 
-The model architecture consists of one-dimensional convolutional layers followed by max pooling to extract short-term degradation features from sensor sequences. A Bidirectional LSTM layer is then used to model long-term temporal dependencies by processing the sequence in both forward and backward directions. An attention layer assigns different importance weights to time steps, enabling the model to focus on the most relevant degradation information. Fully connected layers are used to perform final regression and predict the Remaining Useful Life.
+Sub-datasets: FD002, FD003, FD004
 
----
+Multivariate time-series sensor data until engine failure
 
-## Dataset
+2️⃣ Data Preprocessing
 
-The NASA C-MAPSS dataset is used in this project. Experiments are conducted on the FD002, FD003, and FD004 sub-datasets, which include varying operating conditions, fault modes, and environmental variability. Each dataset contains multiple sensor measurements recorded across the full operational life of turbofan engines until failure.
+Removal of non-informative sensors
 
----
+Normalization of sensor values
 
-## Results
+Sliding window approach to convert time-series data into sequences
 
-The experimental results demonstrate strong RUL prediction performance across all evaluated datasets. Predicted RUL values closely follow the true RUL trends, indicating good agreement between model outputs and actual engine degradation behavior. Error distributions show minimal bias, and the evaluation metrics confirm the reliability and accuracy of the proposed approach.
+3️⃣ Feature Reduction using PCA (Only)
 
----
+Principal Component Analysis (PCA) is used as the only feature reduction technique in this project.
 
-## Project Updates
+Reduces high-dimensional sensor data
 
-* Completed data preprocessing and sensor selection stages
-* Implemented CNN–BiLSTM–Attention architecture
-* Evaluated model performance using standard regression metrics
-* Generated result visualizations in Python and MATLAB
+Removes redundancy and noise
 
----
+Retains maximum variance (engine health information)
 
-## Challenges / Issues Faced
+📌 No other sensor selection or filtering methods are used.
 
-* High dimensionality and redundancy in sensor data
-* Presence of noise and non-linear degradation behavior
-* Handling long-term temporal dependencies in time-series data
-* Balancing model complexity and generalization
+🔢 Mathematical Technique: PCA (Simple Explanation)
 
----
+Given a data matrix 
+𝑋
+X:
 
-## Future Plans
+Center the data
 
-Future work will focus exclusively on the use of **Principal Component Analysis (PCA)** for feature reduction and degradation modeling. The aim is to analyze the effectiveness of PCA in capturing engine health information while reducing data dimensionality and sensor redundancy. No additional deep learning architectures will be explored, enabling a focused study on PCA-based RUL prediction and robustness under varying operating conditions.
+Compute covariance matrix
 
+Calculate eigenvalues and eigenvectors
+
+Project data onto top-k principal components
+
+🧸 Toy Example (PCA)
+
+Suppose we have 2 sensors:
+
+Sensor 1	Sensor 2
+2	4
+3	6
+4	8
+
+These sensors are highly correlated.
+
+👉 PCA combines them into one principal component that captures most of the information, reducing dimensionality from 2 → 1.
+
+4️⃣ Model Architecture
+
+The reduced PCA features are fed into a deep learning model:
+
+CNN + BiLSTM + Attention
+
+CNN (1D Convolution):
+Extracts short-term degradation patterns
+
+BiLSTM:
+Captures long-term dependencies in both forward and backward directions
+
+Attention Layer:
+Assigns higher importance to critical time steps related to engine failure
+
+Fully Connected Layer:
+Predicts the Remaining Useful Life (RUL)
+
+📊 Results & Discussion
+
+Predicted RUL values closely match actual RUL trends
+
+Low prediction error across different operating conditions
+
+PCA successfully reduces dimensionality while preserving degradation information
+
+Attention mechanism improves model interpretability by focusing on critical degradation stages
+
+Evaluation Metrics:
+
+RMSE
+
+MAE
+
+R² Score
+
+🚀 Future Plans
+
+Deploy PCA-based RUL prediction in real aircraft maintenance systems
+
+Apply the approach to:
+
+Wind turbines
+
+Industrial motors
+
+Electric vehicle batteries
+
+Study robustness of PCA under noisy sensor conditions
+
+Develop a lightweight real-time monitoring system
+
+📚 References
+
+NASA C-MAPSS Dataset
+https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
+
+Saxena et al. (2008), NASA Ames
+https://ti.arc.nasa.gov/m/project/prognostic-data-repository/
+
+Dida et al. (2025), IJPHM
+https://www.phmpapers.org
+
+Ferreira & Gonçalves (2022), Scientific Reports
+https://www.nature.com/articles/s41598-022-XXXXX
