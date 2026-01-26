@@ -1,7 +1,7 @@
- ============================================================
+# ============================================================
 # TURBOFAN ENGINE RUL PREDICTION (C-MAPSS)
-# SEPARATE TRAINING FOR FD001, FD002, FD003, FD004
 # CNN + BiLSTM + Attention
+# Dataset-specific tuning for FD002 & FD004
 # ============================================================
 
 # ======================
@@ -29,7 +29,6 @@ tf.random.set_seed(42)
 # GLOBAL SETTINGS
 # ======================
 BASE_PATH = r"C:\Users\sowmy\OneDrive\Desktop\mfc4_project\cmappss_dataset"
-WINDOW = 30
 TOL = 40
 
 DATASETS = {
@@ -66,7 +65,7 @@ def load_dataset(dataset):
     return train, test, rul.values.flatten()
 
 # ======================
-# SENSOR SELECTION
+# SENSOR SELECTION (DATA-DRIVEN)
 # ======================
 def monotonicity(df, sensor):
     vals = []
@@ -88,6 +87,7 @@ def prognosability(df, sensor):
 def select_sensors(train):
     sensors = [f's{i}' for i in range(1, 22)]
 
+    # Variance filter
     var = train[sensors].var()
     sensors = var[var > 1e-4].index.tolist()
 
@@ -99,13 +99,14 @@ def select_sensors(train):
     score_df = pd.DataFrame.from_dict(
         scores, orient='index', columns=['score']
     )
+
     return score_df.sort_values('score', ascending=False)\
                    .head(12).index.tolist()
 
 # ======================
 # SEQUENCE CREATION
 # ======================
-def create_train_sequences(df, sensors, RUL_CAP):
+def create_train_sequences(df, sensors, RUL_CAP, WINDOW):
     X, y = [], []
 
     max_cycle = df.groupby('engine_id')['cycle'].max()
@@ -125,7 +126,7 @@ def create_train_sequences(df, sensors, RUL_CAP):
 
     return np.array(X), np.array(y)
 
-def create_test_sequences(df, sensors):
+def create_test_sequences(df, sensors, WINDOW):
     X = []
 
     for eid in df.engine_id.unique():
@@ -158,9 +159,9 @@ class Attention(tf.keras.layers.Layer):
         return tf.reduce_sum(a * x, axis=1)
 
 # ======================
-# MODEL
+# MODEL DEFINITIONS
 # ======================
-def build_model(n_features):
+def build_standard_model(n_features, WINDOW):
     inp = Input(shape=(WINDOW, n_features))
 
     x = Conv1D(32, 3, activation='relu')(inp)
@@ -180,6 +181,29 @@ def build_model(n_features):
     )
     return model
 
+def build_high_accuracy_model(n_features, WINDOW):
+    inp = Input(shape=(WINDOW, n_features))
+
+    x = Conv1D(64, 3, padding='same', activation='relu')(inp)
+    x = MaxPooling1D(2)(x)
+
+    x = Bidirectional(LSTM(96, return_sequences=True))(x)
+    x = Bidirectional(LSTM(64, return_sequences=True))(x)
+    x = Attention()(x)
+
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.4)(x)
+    x = Dense(64, activation='relu')(x)
+
+    out = Dense(1)(x)
+
+    model = Model(inp, out)
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=3e-4),
+        loss=tf.keras.losses.Huber(delta=20.0)
+    )
+    return model
+
 # ======================
 # MAIN TRAINING LOOP
 # ======================
@@ -187,6 +211,12 @@ results = {}
 
 for dataset, RUL_CAP in DATASETS.items():
     print(f"\n========== TRAINING {dataset} ==========")
+
+    # Dataset-specific window
+    if dataset in ["FD002", "FD004"]:
+        WINDOW = 50
+    else:
+        WINDOW = 30
 
     train, test, y_test = load_dataset(dataset)
 
@@ -197,21 +227,27 @@ for dataset, RUL_CAP in DATASETS.items():
     train[sensor_cols] = scaler.fit_transform(train[sensor_cols])
     test[sensor_cols] = scaler.transform(test[sensor_cols])
 
-    X_train, y_train = create_train_sequences(train, sensor_cols, RUL_CAP)
-    X_test = create_test_sequences(test, sensor_cols)
+    X_train, y_train = create_train_sequences(
+        train, sensor_cols, RUL_CAP, WINDOW
+    )
+    X_test = create_test_sequences(
+        test, sensor_cols, WINDOW
+    )
 
-    model = build_model(len(sensor_cols))
-    model.summary()
+    if dataset in ["FD002", "FD004"]:
+        model = build_high_accuracy_model(len(sensor_cols), WINDOW)
+    else:
+        model = build_standard_model(len(sensor_cols), WINDOW)
 
     early_stop = EarlyStopping(
         monitor='val_loss',
-        patience=10,
+        patience=15,
         restore_best_weights=True
     )
 
     model.fit(
         X_train, y_train,
-        epochs=100,
+        epochs=120,
         batch_size=64,
         validation_split=0.2,
         callbacks=[early_stop],
@@ -235,7 +271,7 @@ for dataset, RUL_CAP in DATASETS.items():
     print(f"Accuracy (±{TOL}) : {acc:.2f}%")
 
 # ======================
-#h FINAL SUMMARY
+# FINAL SUMMARY
 # ======================
 print("\n========== FINAL SUMMARY ==========")
 for d, r in results.items():
@@ -243,3 +279,4 @@ for d, r in results.items():
         f"{d} -> RMSE={r[0]:.2f}, MAE={r[1]:.2f}, "
         f"R²={r[2]:.3f}, Acc={r[3]:.2f}%"
     )
+
