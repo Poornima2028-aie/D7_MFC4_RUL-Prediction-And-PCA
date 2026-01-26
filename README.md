@@ -7,10 +7,10 @@
 
 ## 👥 Team Members
 
-- **Poornima P** – cb.sc.u4aie24343 – poornimap@example.com  
-- **Ch. Sarvani Sruthi** – cb.sc.u4aie24311 – sarvani@example.com  
-- **Shri Manasa** – cb.sc.u4aie24356 – manasa@example.com  
-- **Sowmya A** – cb.sc.u4aie24357 – sowmya@example.com  
+- **Poornima P** – cb.sc.u4aie24343
+- **Ch. Sarvani Sruthi** – cb.sc.u4aie24311 
+- **Shri Manasa** – cb.sc.u4aie24356  
+- **Sowmya A** – cb.sc.u4aie24357 
 
 ## 🎯 Objective
 
