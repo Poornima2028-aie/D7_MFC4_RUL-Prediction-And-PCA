@@ -1,0 +1,189 @@
+%% ============================================================
+% C-MAPSS FD004 – CNN + BiLSTM + Sliding Window
+% Monotonicity + Prognosability Sensor Selection
+%% ============================================================
+
+clear; clc; close all;
+
+disp('=== FD004 FINAL RUN ===');
+
+%% ---------------- SETTINGS ----------------
+BASE_PATH = 'C:\Users\HP\Downloads\Mfc_dataset_sem4_new\CMaps';
+DATASET   = 'FD004';
+RUL_CAP   = 150;
+WINDOW    = 50;   
+TOL       = 40;
+
+%% ---------------- COLUMNS ----------------
+cols = {'engine_id','cycle'};
+for i=1:3,  cols{end+1} = ['op' num2str(i)]; end
+for i=1:21, cols{end+1} = ['s'  num2str(i)]; end
+
+%% ---------------- LOAD DATA ----------------
+train = readtable(fullfile(BASE_PATH,['train_' DATASET '.txt']), ...
+    'Delimiter',' ','ReadVariableNames',false);
+test  = readtable(fullfile(BASE_PATH,['test_'  DATASET '.txt']), ...
+    'Delimiter',' ','ReadVariableNames',false);
+y_test = readmatrix(fullfile(BASE_PATH,['RUL_' DATASET '.txt']));
+
+train.Properties.VariableNames = cols;
+test.Properties.VariableNames  = cols;
+
+%% ---------------- ADD RUL ----------------
+mx = groupsummary(train,'engine_id','max','cycle');
+train.RUL = zeros(height(train),1);
+
+for i = 1:height(mx)
+    idx = train.engine_id == mx.engine_id(i);
+    train.RUL(idx) = mx.max_cycle(i) - train.cycle(idx);
+end
+train.RUL = min(train.RUL, RUL_CAP);
+
+%% ---------------- SENSOR SELECTION ----------------
+allSensors = compose('s%d',1:21);
+
+% Variance filter
+v = var(train{:,allSensors});
+allSensors = allSensors(v > 1e-4);
+
+score = zeros(numel(allSensors),1);
+
+for i = 1:numel(allSensors)
+    s = allSensors{i};
+    score(i) = 0.5 * monotonicity(train,s) + ...
+               0.5 * prognosability(train,s);
+end
+
+[~,id] = sort(score,'descend');
+sensors = allSensors(id(1:12));
+nFeat = numel(sensors);
+
+disp('Selected sensors:');
+disp(sensors');
+
+%% ---------------- NORMALIZATION ----------------
+mn = min(train{:,sensors});
+mxv = max(train{:,sensors});
+
+train{:,sensors} = (train{:,sensors}-mn)./(mxv-mn+eps);
+test{:,sensors}  = (test{:,sensors}-mn)./(mxv-mn+eps);
+
+%% ---------------- SLIDING WINDOW (TRAIN) ----------------
+X = {};
+Y = [];
+
+engines = unique(train.engine_id);
+
+for e = 1:numel(engines)
+    d = train(train.engine_id==engines(e),:);
+    vals = d{:,sensors};
+    rul  = d.RUL;
+
+    for i = 1:(size(vals,1)-WINDOW)
+        X{end+1} = vals(i:i+WINDOW-1,:)';   % features × time
+        Y(end+1) = rul(i+WINDOW);
+    end
+end
+
+Y = Y(:);
+
+%% ---------------- TRAIN / VALIDATION ----------------
+N = numel(X);
+p = randperm(N);
+Nv = floor(0.2*N);
+
+XVal = X(p(1:Nv));
+YVal = Y(p(1:Nv));
+
+XTr  = X(p(Nv+1:end));
+YTr  = Y(p(Nv+1:end));
+
+%% ---------------- NETWORK ----------------
+layers = [
+    sequenceInputLayer(nFeat,'MinLength',WINDOW)
+
+    convolution1dLayer(3,32,'Padding','same')
+    reluLayer
+    maxPooling1dLayer(2)
+
+    bilstmLayer(64,'OutputMode','last')
+
+    fullyConnectedLayer(64)
+    reluLayer
+    dropoutLayer(0.3)
+    fullyConnectedLayer(1)
+
+    regressionLayer
+];
+
+opts = trainingOptions('adam', ...
+    'MaxEpochs',20, ...       % reduced for stability
+    'MiniBatchSize',64, ...
+    'Shuffle','every-epoch', ...
+    'ValidationData',{XVal,YVal}, ...
+    'Verbose',true, ...
+    'Plots','training-progress');
+
+%% ---------------- TRAIN ----------------
+net = trainNetwork(XTr,YTr,layers,opts);
+
+%% ---------------- TEST SEQUENCES ----------------
+Xtest = {};
+engines = unique(test.engine_id);
+
+for e = 1:numel(engines)
+    d = test(test.engine_id==engines(e),:);
+    vals = d{:,sensors};
+
+    if size(vals,1) >= WINDOW
+        Xtest{end+1} = vals(end-WINDOW+1:end,:)';
+    else
+        pad = repmat(vals(1,:),WINDOW-size(vals,1),1);
+        Xtest{end+1} = [pad;vals]';
+    end
+end
+
+%% ---------------- PREDICT ----------------
+y_pred = predict(net,Xtest);
+y_pred = max(0,min(y_pred,RUL_CAP));
+
+%% ---------------- METRICS ----------------
+rmse = sqrt(mean((y_test-y_pred).^2));
+mae  = mean(abs(y_test-y_pred));
+acc  = mean(abs(y_test-y_pred)<=TOL)*100;
+
+fprintf('\nFD004 RESULTS\n');
+fprintf('RMSE = %.2f\n',rmse);
+fprintf('MAE  = %.2f\n',mae);
+fprintf('Accuracy (±%d) = %.2f%%\n',TOL,acc);
+
+%% ============================================================
+% FUNCTIONS
+%% ============================================================
+
+function m = monotonicity(t,s)
+    eng = unique(t.engine_id);
+    c = zeros(numel(eng),1);
+
+    for i = 1:numel(eng)
+        v = t{t.engine_id==eng(i), s};
+        c(i) = abs(corr((1:numel(v))', v, 'Rows','complete'));
+    end
+
+    m = mean(c,'omitnan');
+end
+
+function p = prognosability(t,s)
+    eng = unique(t.engine_id);
+    st = zeros(numel(eng),1);
+    en = zeros(numel(eng),1);
+
+    for i = 1:numel(eng)
+        v = t{t.engine_id==eng(i), s};
+        st(i) = v(1);
+        en(i) = v(end);
+    end
+
+    p = exp(-std(en) / (mean(abs(st-en)) + eps));
+end
+
