@@ -9,7 +9,7 @@ clear; clc; close all;
 disp('=== FD004 RUN ===');
 
 %% ---------------- SETTINGS ----------------
-BASE_PATH = 'C:\Users\HP\Downloads\Mfc_dataset_sem4_new\CMaps';
+BASE_PATH = "D:\Downloads\Mfc_dataset_sem4_new\CMaps";
 DATASET   = 'FD004';
 RUL_CAP   = 150;
 WINDOW    = 50;
