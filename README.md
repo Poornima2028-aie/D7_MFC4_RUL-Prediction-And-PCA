@@ -93,6 +93,341 @@ $$
 This ensures stable training and prevents large-value features from dominating the learning process.
 
 ---
+---
+
+# 📡 Sensor Selection
+
+Before applying the sliding window technique, an important preprocessing step is **sensor selection**.
+
+The C-MAPSS turbofan dataset contains many sensors, but **not all sensors contribute useful degradation information**. Some sensors fluctuate randomly and do not reflect the health of the engine.
+
+Therefore, two important metrics are used to evaluate the usefulness of sensors:
+
+- **Monotonicity**
+- **Prognosability**
+
+Sensors that score high in these metrics are selected for training the deep learning model.
+
+---
+
+# 1️⃣ Monotonicity
+
+Monotonicity measures **whether a sensor consistently increases or decreases over time**.
+
+If a sensor steadily increases or decreases across engine cycles, it indicates that the sensor reflects **engine degradation behaviour**.
+
+This relationship is measured using the **Pearson correlation coefficient** between **time (cycle number)** and **sensor values**.
+
+The correlation value ranges between:
+
+| Correlation Value | Meaning |
+|---|---|
+| +1 | Perfect increasing trend |
+| -1 | Perfect decreasing trend |
+| 0 | No relationship |
+
+In degradation analysis, the **absolute value of correlation** is used:
+
+\[
+Monotonicity = |corr(time, sensor)|
+\]
+
+Both increasing and decreasing trends are useful because they indicate **consistent degradation patterns**.
+
+---
+
+## Example: Good Monotonic Sensor
+
+Consider **Sensor S7** from one engine.
+
+| Cycle | Sensor S7 |
+|---|---|
+|1|50|
+|2|52|
+|3|55|
+|4|58|
+|5|61|
+
+Time values:
+
+\[
+[1,2,3,4,5]
+\]
+
+Sensor values:
+
+\[
+[50,52,55,58,61]
+\]
+
+Computing the Pearson correlation between time and sensor value gives:
+
+\[
+corr = 0.99
+\]
+
+Absolute value:
+
+\[
+|0.99| = 0.99
+\]
+
+### Interpretation
+
+- The sensor increases steadily with time  
+- Correlation is close to **1**  
+- The sensor strongly reflects degradation  
+
+Therefore **Sensor S7 has high monotonicity**.
+
+---
+
+## Example: Poor Monotonic Sensor
+
+Consider **Sensor S3**.
+
+| Cycle | Sensor S3 |
+|---|---|
+|1|50|
+|2|53|
+|3|49|
+|4|55|
+|5|52|
+
+Time:
+
+\[
+[1,2,3,4,5]
+\]
+
+Sensor values:
+
+\[
+[50,53,49,55,52]
+\]
+
+Correlation:
+
+\[
+corr = 0.21
+\]
+
+Absolute value:
+
+\[
+|0.21| = 0.21
+\]
+
+### Interpretation
+
+- The sensor fluctuates randomly  
+- No clear degradation trend  
+- Monotonicity is low  
+
+Therefore this sensor is **not useful for degradation modeling**.
+
+---
+
+## Averaging Across Engines
+
+The turbofan dataset contains **multiple engines**, each with its own degradation trajectory.
+
+Therefore monotonicity must be computed **for every engine separately**.
+
+The final monotonicity score is calculated as the **average of absolute correlations across engines**:
+
+\[
+Monotonicity = \frac{1}{N}\sum_{i=1}^{N} |corr_i|
+\]
+
+Where:
+
+- \(N\) = number of engines  
+- \(corr_i\) = correlation for engine \(i\)
+
+---
+
+# 2️⃣ Prognosability Metric
+
+Prognosability measures **whether different engines show similar sensor behaviour near failure**.
+
+A good degradation sensor should satisfy two conditions:
+
+1. The sensor value should **change significantly during degradation**
+2. The **failure values should be similar across different engines**
+
+---
+
+## Step 1: Degradation Magnitude
+
+For each engine:
+
+- Record the **sensor value at the beginning**
+- Record the **sensor value at the failure cycle**
+
+Compute the degradation magnitude:
+
+\[
+|Start - End|
+\]
+
+Example using **Sensor S7**:
+
+| Engine | Start | End |
+|---|---|---|
+|Engine 1|40|80|
+|Engine 2|42|78|
+|Engine 3|39|82|
+
+Compute degradation magnitude:
+
+Engine 1:
+
+\[
+|40 - 80| = 40
+\]
+
+Engine 2:
+
+\[
+|42 - 78| = 36
+\]
+
+Engine 3:
+
+\[
+|39 - 82| = 43
+\]
+
+Average degradation magnitude:
+
+\[
+Mean = \frac{40 + 36 + 43}{3}
+\]
+
+\[
+Mean = 39.67
+\]
+
+This shows that the sensor **changes significantly during degradation**.
+
+---
+
+## Step 2: Failure Value Variation
+
+Failure values:
+
+\[
+[80,78,82]
+\]
+
+Mean failure value:
+
+\[
+Mean = \frac{80+78+82}{3} = 80
+\]
+
+Standard deviation is then calculated to measure variation between engines.
+
+Small standard deviation means **engines fail at similar sensor values**, which is desirable.
+
+---
+
+## Step 3: Prognosability Formula
+
+The prognosability score is computed as:
+
+\[
+Prognosability = e^{-\frac{\sigma_{failure}}{\mu_{degradation}}}
+\]
+
+Where:
+
+- \(\sigma_{failure}\) = standard deviation of failure values  
+- \(\mu_{degradation}\) = mean degradation magnitude  
+
+Example result:
+
+\[
+Prognosability \approx 0.96
+\]
+
+### Interpretation
+
+- Sensor changes significantly during degradation  
+- Failure values are consistent across engines  
+
+Therefore the sensor is **reliable for RUL prediction**.
+
+---
+
+# 3️⃣ Final Sensor Scoring
+
+The final sensor score combines **monotonicity** and **prognosability**.
+
+\[
+SensorScore = 0.5 \times Monotonicity + 0.5 \times Prognosability
+\]
+
+Both metrics are given equal importance.
+
+---
+
+## Example with Turbofan Sensors
+
+| Sensor | Monotonicity | Prognosability |
+|---|---|---|
+|S7|0.92|0.88|
+|S11|0.75|0.70|
+|S3|0.30|0.40|
+
+### Sensor S11 Score
+
+\[
+Score = 0.5(0.75) + 0.5(0.70)
+\]
+
+\[
+Score = 0.375 + 0.35 = 0.725
+\]
+
+### Sensor S3 Score
+
+\[
+Score = 0.5(0.30) + 0.5(0.40)
+\]
+
+\[
+Score = 0.15 + 0.20 = 0.35
+\]
+
+---
+
+## Sensor Ranking
+
+| Sensor | Score | Rank |
+|---|---|---|
+|S7|0.90|1|
+|S11|0.725|2|
+|S3|0.35|3|
+
+### Interpretation
+
+- **S7 → Excellent degradation sensor**
+- **S11 → Moderately useful**
+- **S3 → Poor sensor**
+
+---
+
+## Final Sensor Selection
+
+The system selects **top-ranked sensors** based on the final score.
+
+These selected sensors are then used for:
+
+- Sliding window sequence creation
+- Deep learning model training
+- Remaining Useful Life prediction
 
 ## Sliding Window Technique
 
