@@ -127,6 +127,10 @@ This architecture captures both **local patterns** and **long-term temporal depe
 
 # 1️⃣ Convolutional Neural Network (CNN)
 
+<p align="center">
+<img src="images/cnn.png.jpeg" width="600">
+</p>
+
 A **1D Convolutional Neural Network** is used to extract local features from sensor sequences.
 
 ### Convolution Operation
@@ -260,6 +264,49 @@ The output is the **predicted number of cycles remaining before engine failure**
 
 # 📊 Results and Discussion
 
+<p align="center">
+<img src="images/image1.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image2.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image3.png.jpeg" width="600">
+</p>
+
+PYTHON RESULTS:
+<p align="center">
+<img src="images/image4.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image5.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image6.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image7.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image8.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image9.png.jpeg" width="600">
+</p>
+
+Matlab Results: 
+<p align="center">
+<img src="images/image10.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image11.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/image12.png.jpeg" width="600">
+</p>
+<p align="center">
+<img src="images/imag13.png.jpeg" width="600">
+</p>
 The proposed deep learning model shows strong performance in predicting Remaining Useful Life.
 
 Key observations:
