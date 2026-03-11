@@ -305,7 +305,7 @@ Matlab Results:
 <img src="images/image12.png.jpeg" width="600">
 </p>
 <p align="center">
-<img src="images/imag13.png.jpeg" width="600">
+<img src="images/image13.png.jpeg" width="600">
 </p>
 The proposed deep learning model shows strong performance in predicting Remaining Useful Life.
 
