@@ -65,7 +65,7 @@ Experiments are conducted on the following subsets:
 - FD003  
 - FD004  
 
-Each dataset contains the following information:
+Each dataset contains:
 
 - Engine ID  
 - Cycle number  
@@ -80,25 +80,23 @@ As the number of cycles increases, the engine gradually degrades until failure.
 
 # 🔄 Data Preprocessing
 
-Before training the deep learning model, several preprocessing steps are applied to prepare the sensor data.
-
 ## Normalization
 
-Sensor values may have different numerical ranges. To ensure stable model training, all sensor values are **normalized to a common scale**.
+Sensor values are normalized to ensure that all features lie within a similar numerical range.
 
-Normalization helps to:
+The normalization formula used is:
 
-- Improve training stability  
-- Prevent large-value sensors from dominating the learning process  
-- Improve convergence of the deep learning model  
+$$
+X_{norm} = \frac{X - X_{min}}{X_{max} - X_{min}}
+$$
+
+This ensures stable training and prevents large-value features from dominating the learning process.
 
 ---
 
 ## Sliding Window Technique
 
-The dataset is a **time-series dataset**, meaning the sensor readings change over time. To capture temporal patterns, a **sliding window technique** is used.
-
-This technique converts the time-series data into **fixed-length sequences**.
+The dataset is converted into **fixed-length sequences** using a sliding window approach.
 
 Example:
 
@@ -106,118 +104,169 @@ Cycle 1–30 → Input Sequence 1
 Cycle 2–31 → Input Sequence 2  
 Cycle 3–32 → Input Sequence 3  
 
-Each sequence represents the **recent behaviour of the engine over several cycles**, allowing the model to learn how degradation evolves over time.
+This allows the model to learn **temporal degradation patterns** over multiple cycles.
 
 ---
 
 # 🧠 Model Architecture
 
-To accurately estimate the Remaining Useful Life of the engines, a **hybrid deep learning architecture** is used.
-
-The model combines:
+The proposed deep learning architecture combines:
 
 - Convolutional Neural Networks (CNN)
 - Bidirectional Long Short-Term Memory (BiLSTM)
 - Attention Mechanism
+- Fully Connected Layer
 
 Overall workflow:
 
-Sensor Data → Sliding Window Sequences → CNN → BiLSTM → Attention → Dense Layer → RUL Prediction
+Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense Layer → RUL Prediction
 
-This architecture captures both **local degradation patterns** and **long-term temporal dependencies**.
+This architecture captures both **local patterns** and **long-term temporal dependencies**.
 
 ---
 
 # 1️⃣ Convolutional Neural Network (CNN)
 
-The first component of the model is a **1D Convolutional Neural Network (CNN)**.
-
-CNN is used to automatically extract meaningful features from the multivariate sensor sequences.
-
-### Role of CNN
-
-The CNN layer helps to:
-
-- Capture **local temporal patterns in sensor signals**
-- Detect **short-term degradation trends**
-- Extract important features automatically from raw sensor data
-
-Instead of manually designing features, CNN learns relevant patterns directly from the data.
+A **1D Convolutional Neural Network** is used to extract local features from sensor sequences.
 
 ### Convolution Operation
 
-In a convolution operation, a filter slides across the input sequence and performs element-wise multiplication.
+The convolution operation can be represented as:
 
-This operation produces a **feature map** that highlights important patterns in the data.
+$$
+y(t) = \sum_{i=0}^{k} x(t-i) \cdot w(i)
+$$
 
-CNN is effective because engine degradation often appears as **small local variations in sensor readings**, which convolution filters can detect.
+Where:
+
+- $x(t)$ = input signal at time step $t$  
+- $w(i)$ = convolution filter weights  
+- $k$ = filter size  
+
+The convolution layer produces **feature maps** that highlight important degradation patterns.
+
+CNN helps capture **short-term changes in sensor readings**, which are early indicators of engine degradation.
 
 ---
 
 # 2️⃣ Bidirectional Long Short-Term Memory (BiLSTM)
 
-After CNN extracts local features, the feature maps are passed to a **Bidirectional Long Short-Term Memory (BiLSTM)** network.
+The features extracted by CNN are passed to a **Bidirectional Long Short-Term Memory (BiLSTM)** network.
 
-BiLSTM is a type of **Recurrent Neural Network (RNN)** designed to learn **long-term dependencies in sequential data**.
+LSTM networks use memory cells and gates to capture long-term dependencies.
 
-### Why LSTM is Needed
+### Forget Gate
 
-Engine degradation occurs gradually across many cycles. Therefore, the model must understand **long-term temporal relationships** between sensor readings.
+Determines which previous information should be discarded.
 
-LSTM networks solve this problem using **memory cells and gating mechanisms** that regulate the flow of information through time.
+$$
+f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)
+$$
 
-### Bidirectional Learning
+### Input Gate
 
-In **Bidirectional LSTM**, the sequence is processed in two directions:
+Determines which new information should be stored.
 
-- Forward direction (past → future)
-- Backward direction (future → past)
+$$
+i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)
+$$
 
-This allows the model to learn **complete temporal context of engine degradation**, improving prediction performance.
+### Candidate Memory
+
+$$
+\tilde{C_t} = tanh(W_c[h_{t-1}, x_t] + b_c)
+$$
+
+### Memory Update
+
+$$
+C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C_t}
+$$
+
+### Output Gate
+
+$$
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)
+$$
+
+### Hidden State
+
+$$
+h_t = o_t \cdot tanh(C_t)
+$$
+
+---
+
+### Bidirectional Processing
+
+In BiLSTM, the sequence is processed in both directions:
+
+- Forward: $\overrightarrow{h_t}$
+- Backward: $\overleftarrow{h_t}$
+
+Final output:
+
+$$
+h_t = [\overrightarrow{h_t}; \overleftarrow{h_t}]
+$$
+
+This allows the model to capture **complete temporal context**.
 
 ---
 
 # 3️⃣ Attention Mechanism
 
-After the BiLSTM layer processes the sequence, an **Attention Layer** is applied.
+The attention layer helps the model focus on the **most important time steps**.
 
-The attention mechanism allows the model to **focus on the most important time steps in the sensor sequence**.
+### Alignment Score
 
-Not all cycles contribute equally to predicting failure. Some cycles contain stronger degradation indicators.
+$$
+e_t = v^T tanh(W_h h_t + b)
+$$
 
-### How Attention Helps
+### Attention Weights
 
-The attention layer assigns **different importance weights to different time steps**.
+$$
+\alpha_t = \frac{exp(e_t)}{\sum_{i=1}^{T} exp(e_i)}
+$$
 
-This allows the model to focus on critical degradation periods that are most useful for predicting RUL.
+### Context Vector
 
-Advantages of Attention:
+$$
+c = \sum_{t=1}^{T} \alpha_t h_t
+$$
 
-- Improves prediction accuracy  
-- Highlights important degradation cycles  
-- Makes the model more interpretable  
+The context vector represents a **weighted summary of the sequence**, focusing on important degradation patterns.
 
 ---
 
 # 4️⃣ Fully Connected Layer (RUL Prediction)
 
-The final stage of the network is a **Fully Connected (Dense) Layer**.
+The context vector from the attention layer is passed to a dense layer to predict RUL.
 
-The information extracted by CNN, BiLSTM, and the Attention mechanism is passed to this layer, which produces the final **Remaining Useful Life (RUL)** prediction.
+$$
+RUL = Wc + b
+$$
 
-The output is a **single numerical value representing the number of cycles remaining before engine failure**.
+Where:
+
+- $c$ = context vector  
+- $W$ = weight matrix  
+- $b$ = bias  
+
+The output is the **predicted number of cycles remaining before engine failure**.
 
 ---
 
 # 📊 Results and Discussion
 
-The proposed deep learning model shows **strong performance in predicting Remaining Useful Life across the evaluated datasets**.
+The proposed deep learning model shows strong performance in predicting Remaining Useful Life.
 
-Key observations include:
+Key observations:
 
-- Predicted RUL values closely follow the **true degradation trends**
+- Predicted RUL values closely follow **true degradation trends**
 - CNN captures **local sensor patterns**
-- BiLSTM models **long-term temporal dependencies**
+- BiLSTM models **long-term dependencies**
 - Attention improves **prediction accuracy and interpretability**
 
 Evaluation metrics used:
@@ -235,7 +284,7 @@ Evaluation metrics used:
 Future improvements include:
 
 - Deploying the system for **real aircraft maintenance environments**
-- Extending the approach to other industrial systems such as:
+- Extending the approach to other systems such as:
   - Wind turbines
   - Industrial machinery
   - Electric vehicle batteries
