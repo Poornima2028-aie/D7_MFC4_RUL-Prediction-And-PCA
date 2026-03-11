@@ -362,11 +362,20 @@ Cycle 1–30 → Input Sequence 1
 Cycle 2–31 → Input Sequence 2  
 Cycle 3–32 → Input Sequence 3  
 
----
-
 # 🧠 Model Architecture
 
-Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense → RUL
+The proposed deep learning architecture combines:
+
+- CNN
+- BiLSTM
+- Attention Mechanism
+- Dense Layer
+
+<p align="center">
+<img src="images/image8.png.jpeg" width="750">
+</p>
+
+Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense Layer → RUL Prediction
 
 ---
 
@@ -376,63 +385,103 @@ Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense → RU
 <img src="images/cnn.png.jpeg" width="600">
 </p>
 
+A **1D CNN** extracts local temporal patterns from sensor sequences.
+
+### Convolution Operation
+
 $$
 y(t) = \sum_{i=0}^{k} x(t-i) \cdot w(i)
 $$
 
+Where:
+
+- $x(t)$ = input signal  
+- $w(i)$ = filter weights  
+- $k$ = kernel size  
+
+CNN captures **local degradation features**.
+
 ---
 
-# 2️⃣ Bidirectional LSTM
+# 2️⃣ Bidirectional Long Short-Term Memory (BiLSTM)
+
+<p align="center">
+<img src="images/image9.png.jpeg" width="650">
+</p>
+
+BiLSTM captures **long-term temporal dependencies**.
+
+### Forget Gate
 
 $$
-f_t = \sigma(W_f[h_{t-1},x_t]+b_f)
+f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)
 $$
 
-$$
-i_t = \sigma(W_i[h_{t-1},x_t]+b_i)
-$$
+### Input Gate
 
 $$
-\tilde{C_t}=tanh(W_c[h_{t-1},x_t]+b_c)
+i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)
 $$
 
-$$
-C_t=f_tC_{t-1}+i_t\tilde{C_t}
-$$
+### Candidate Memory
 
 $$
-o_t=\sigma(W_o[h_{t-1},x_t]+b_o)
+\tilde{C_t} = tanh(W_c[h_{t-1}, x_t] + b_c)
 $$
 
-$$
-h_t=o_t\tanh(C_t)
-$$
-
-Bidirectional output
+### Memory Update
 
 $$
-h_t=[\overrightarrow{h_t};\overleftarrow{h_t}]
+C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C_t}
+$$
+
+### Output Gate
+
+$$
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)
+$$
+
+### Hidden State
+
+$$
+h_t = o_t \cdot tanh(C_t)
 $$
 
 ---
 
 # 3️⃣ Attention Mechanism
 
-$$
-e_t=v^Ttanh(W_hh_t+b)
-$$
+<p align="center">
+<img src="images/image10.png.jpeg" width="650">
+</p>
+
+### Alignment Score
 
 $$
-\alpha_t=\frac{exp(e_t)}{\sum exp(e_i)}
+e_t = v^T tanh(W_h h_t + b)
 $$
 
+### Attention Weights
+
 $$
-c=\sum \alpha_th_t
+\alpha_t = \frac{exp(e_t)}{\sum exp(e_i)}
+$$
+
+### Context Vector
+
+$$
+c = \sum \alpha_t h_t
 $$
 
 ---
 
 # 4️⃣ Fully Connected Layer
+
+<p align="center">
+<img src="images/image11.png.jpeg" width="600">
+</p>
+
+Final RUL prediction:
 
 $$
 RUL = Wc + b
@@ -443,94 +492,37 @@ $$
 # 📊 Results
 
 <p align="center">
-<img src="images/image1.png.jpeg" width="600">
+<img src="images/rul.png.jpeg" width="700">
 </p>
 
-<p align="center">
-<img src="images/image2.png.jpeg" width="600">
-</p>
-
-PYTHON RESULTS
-
-<p align="center">
-<img src="images/image4.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image5.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image6.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image7.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image8.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image9.png.jpeg" width="600">
-</p>
-
-MATLAB RESULTS
-
-<p align="center">
-<img src="images/image10.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image11.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image12.png.jpeg" width="600">
-</p>
-
-<p align="center">
-<img src="images/image13.png.jpeg" width="600">
-</p>
-
-Key observations:
-
-- CNN captures local sensor patterns
-- BiLSTM models long-term dependencies
-- Attention focuses on important degradation cycles
-
-Metrics used:
+Evaluation Metrics:
 
 - RMSE
 - MAE
 - R² Score
+
+The model successfully captures degradation patterns and predicts engine Remaining Useful Life.
 
 ---
 
 # 🔮 Future Work
 
 - Real aircraft deployment
-- Wind turbine prediction
-- Battery degradation prediction
-- Real-time monitoring systems
+- Industrial machine monitoring
+- Battery health prediction
+- Robust models for noisy environments
 
 ---
 
 # 📚 References
 
-Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008).  
-Damage propagation modeling for aircraft engine run-to-failure simulation.  
-NASA Ames Research Center.
-
+NASA Prognostics Data Repository  
 https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
 
-Dida, M., Cheriet, A., & Belhadj, M. (2025).  
-Remaining Useful Life Prediction Using Attention-LSTM Neural Network of Aircraft Engines.
-
+International Journal of Prognostics and Health Management  
 https://www.phmpapers.org
 
-Ferreira, L., & Gonçalves, R. (2022).  
-Remaining Useful Life Estimation Using Deep Learning and the NASA C-MAPSS Dataset.
-
+Scientific Reports – Springer Nature  
 https://www.nature.com
+---
+
