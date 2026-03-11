@@ -366,16 +366,16 @@ Cycle 3–32 → Input Sequence 3
 
 The proposed deep learning architecture combines:
 
-- CNN
-- BiLSTM
-- Attention Mechanism
-- Dense Layer
+- **Convolutional Neural Networks (CNN)**
+- **Bidirectional Long Short-Term Memory (BiLSTM)**
+- **Attention Mechanism**
+- **Fully Connected Layer**
 
-<p align="center">
-<img src="images/image8.png.jpeg" width="750">
-</p>
+### Overall Workflow
 
 Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense Layer → RUL Prediction
+
+This architecture captures both **local patterns** and **long-term temporal dependencies**.
 
 ---
 
@@ -385,9 +385,11 @@ Sensor Data → Sliding Window → CNN → BiLSTM → Attention → Dense Layer 
 <img src="images/cnn.png.jpeg" width="600">
 </p>
 
-A **1D CNN** extracts local temporal patterns from sensor sequences.
+A **1D Convolutional Neural Network** is used to extract local features from sensor sequences.
 
 ### Convolution Operation
+
+The convolution operation can be represented as:
 
 $$
 y(t) = \sum_{i=0}^{k} x(t-i) \cdot w(i)
@@ -395,29 +397,33 @@ $$
 
 Where:
 
-- $x(t)$ = input signal  
-- $w(i)$ = filter weights  
-- $k$ = kernel size  
+- $x(t)$ = input signal at time step $t$  
+- $w(i)$ = convolution filter weights  
+- $k$ = filter size  
 
-CNN captures **local degradation features**.
+The convolution layer produces **feature maps** that highlight important degradation patterns.
+
+CNN helps capture **short-term changes in sensor readings**, which are early indicators of engine degradation.
 
 ---
 
 # 2️⃣ Bidirectional Long Short-Term Memory (BiLSTM)
 
-<p align="center">
-<img src="images/image9.png.jpeg" width="650">
-</p>
+The features extracted by CNN are passed to a **Bidirectional Long Short-Term Memory (BiLSTM)** network.
 
-BiLSTM captures **long-term temporal dependencies**.
+LSTM networks use memory cells and gates to capture long-term dependencies.
 
 ### Forget Gate
+
+Determines which previous information should be discarded.
 
 $$
 f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)
 $$
 
 ### Input Gate
+
+Determines which new information should be stored.
 
 $$
 i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)
@@ -449,80 +455,170 @@ $$
 
 ---
 
+### Bidirectional Processing
+
+In BiLSTM, the sequence is processed in both directions:
+
+- Forward: $\overrightarrow{h_t}$
+- Backward: $\overleftarrow{h_t}$
+
+Final output:
+
+$$
+h_t = [\overrightarrow{h_t}; \overleftarrow{h_t}]
+$$
+
+This allows the model to capture **complete temporal context**.
+
+---
+
 # 3️⃣ Attention Mechanism
 
-<p align="center">
-<img src="images/image10.png.jpeg" width="650">
-</p>
+The attention layer helps the model focus on the **most important time steps**.
 
 ### Alignment Score
 
 $$
-e_t = v^T tanh(W_h h_t + b)
+e_t = v^T \tanh(W_h h_t + b)
 $$
 
 ### Attention Weights
 
 $$
-\alpha_t = \frac{exp(e_t)}{\sum exp(e_i)}
+\alpha_t = \frac{exp(e_t)}{\sum_{i=1}^{T} exp(e_i)}
 $$
 
 ### Context Vector
 
 $$
-c = \sum \alpha_t h_t
+c = \sum_{t=1}^{T} \alpha_t h_t
 $$
+
+The context vector represents a **weighted summary of the sequence**, focusing on important degradation patterns.
 
 ---
 
-# 4️⃣ Fully Connected Layer
+# 4️⃣ Fully Connected Layer (RUL Prediction)
 
-<p align="center">
-<img src="images/image11.png.jpeg" width="600">
-</p>
-
-Final RUL prediction:
+The context vector from the attention layer is passed to a dense layer to predict RUL.
 
 $$
 RUL = Wc + b
 $$
 
+Where:
+
+- $c$ = context vector  
+- $W$ = weight matrix  
+- $b$ = bias  
+
+The output is the **predicted number of cycles remaining before engine failure**.
+
 ---
 
-# 📊 Results
+# 📊 Results and Discussion
 
 <p align="center">
-<img src="images/rul.png.jpeg" width="700">
+<img src="images/image1.png.jpeg" width="600">
 </p>
 
-Evaluation Metrics:
+<p align="center">
+<img src="images/image2.png.jpeg" width="600">
+</p>
 
-- RMSE
-- MAE
-- R² Score
+## Python Results
 
-The model successfully captures degradation patterns and predicts engine Remaining Useful Life.
+<p align="center">
+<img src="images/image4.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image5.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image6.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image7.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image8.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image9.png.jpeg" width="600">
+</p>
+
+## MATLAB Results
+
+<p align="center">
+<img src="images/image10.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image11.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image12.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image13.png.jpeg" width="600">
+</p>
+
+The proposed deep learning model shows strong performance in predicting Remaining Useful Life.
+
+### Key Observations
+
+- Predicted RUL values closely follow **true degradation trends**
+- CNN captures **local sensor patterns**
+- BiLSTM models **long-term dependencies**
+- Attention improves **prediction accuracy and interpretability**
+
+### Evaluation Metrics
+
+- **RMSE** (Root Mean Square Error)
+- **MAE** (Mean Absolute Error)
+- **R² Score**
+
+*(Detailed results and graphs will be added below.)*
 
 ---
 
-# 🔮 Future Work
+# 🔮 Future Plans
 
-- Real aircraft deployment
-- Industrial machine monitoring
-- Battery health prediction
-- Robust models for noisy environments
+Future improvements include:
+
+- Deploying the system for **real aircraft maintenance environments**
+- Extending the approach to other systems such as:
+  - Wind turbines
+  - Industrial machinery
+  - Electric vehicle batteries
+- Studying robustness under **noisy sensor conditions**
+- Developing a **lightweight real-time monitoring system**
 
 ---
 
 # 📚 References
 
-NASA Prognostics Data Repository  
+Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008).  
+Damage propagation modeling for aircraft engine run-to-failure simulation.  
+NASA Ames Research Center.
+
 https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
 
-International Journal of Prognostics and Health Management  
+Dida, M., Cheriet, A., & Belhadj, M. (2025).  
+Remaining Useful Life Prediction Using Attention-LSTM Neural Network of Aircraft Engines.  
+International Journal of Prognostics and Health Management.
+
 https://www.phmpapers.org
 
-Scientific Reports – Springer Nature  
-https://www.nature.com
----
+Ferreira, L., & Gonçalves, R. (2022).  
+Remaining Useful Life Estimation Using Deep Learning and the NASA C-MAPSS Dataset.  
+Scientific Reports, Springer Nature.
 
+https://www.nature.com
