@@ -608,7 +608,7 @@ The pipeline runs identically for all four C-MAPSS datasets:
 
 ### Workflow
 
-Raw Sensor Data → Preprocessing → Sliding Window → PCA → SVR → RUL Prediction
+Sensor Data → Preprocessing → Sliding Window → PCA → SVR → RUL Prediction
 
 The complete workflow contains **10 processing steps**:
 
@@ -621,7 +621,7 @@ The complete workflow contains **10 processing steps**:
 7. Support Vector Regression (SVR) training  
 8. Prediction and clipping  
 9. Evaluation metrics  
-10. Visualization of results
+10. Visualization of results  
 
 ---
 
@@ -656,8 +656,8 @@ RUL(t) = min(max_cycle_i − t , RUL_CAP)
 
 Where:
 
-- `max_cycle_i` = final cycle for engine *i*
-- `t` = current cycle
+- `max_cycle_i` = final cycle for engine *i*  
+- `t` = current cycle  
 - `RUL_CAP = 125`
 
 ### Example
@@ -675,10 +675,6 @@ This prevents unrealistic RUL values early in the engine life.
 ---
 
 # 📉 Principal Component Analysis (PCA)
-
-<p align="center">
-<img src="images/image1.png.jpeg" width="600">
-</p>
 
 PCA reduces **high-dimensional sensor data** into a smaller set of informative features while preserving the majority of the variance.
 
@@ -728,9 +724,9 @@ C = (1 / (N − 1)) * Xcᵀ Xc
 
 Properties:
 
-- Symmetric matrix
-- Eigenvalues ≥ 0
-- Captures correlation between sensors
+- Symmetric matrix  
+- Eigenvalues ≥ 0  
+- Captures correlation between sensors  
 
 ---
 
@@ -746,8 +742,8 @@ C v = λ v
 
 Where:
 
-- `v` = eigenvector
-- `λ` = eigenvalue
+- `v` = eigenvector  
+- `λ` = eigenvalue  
 
 The covariance matrix can be decomposed as:
 
@@ -756,7 +752,7 @@ C = V D Vᵀ
 ```
 
 - **V** → eigenvectors  
-- **D** → eigenvalues
+- **D** → eigenvalues  
 
 ---
 
@@ -806,8 +802,8 @@ Z = X_centered · W
 
 Where:
 
-- `W` = selected eigenvectors
-- `Z` = reduced dimensional representation
+- `W` = selected eigenvectors  
+- `Z` = reduced dimensional representation  
 
 In the C-MAPSS dataset:
 
@@ -820,10 +816,6 @@ In the C-MAPSS dataset:
 # 🤖 Support Vector Regression (SVR)
 
 After PCA, the reduced features are used to train a **Support Vector Regression model**.
-
-<p align="center">
-<img src="images/image2.png.jpeg" width="600">
-</p>
 
 SVR learns a function that predicts Remaining Useful Life.
 
@@ -851,26 +843,87 @@ This allows SVR to capture **nonlinear relationships in engine degradation**.
 
 ---
 
-# 📈 Results and Visualization
+# 📈 Results and Discussion
+
+The PCA + SVR model demonstrates effective prediction of Remaining Useful Life for aircraft engines using multivariate sensor data.
+
+Key findings include:
+
+- PCA successfully reduces **420-dimensional sensor data to ~40 components**
+- Dimensionality reduction improves **training stability and speed**
+- SVR captures **nonlinear degradation patterns**
+- The combined PCA + SVR pipeline provides **robust and stable predictions**
+
+## FD001 Dataset Results
 
 <p align="center">
-<img src="images/image3.png.jpeg" width="600">
+<img src="images/fd001.png.jpeg" width="600">
 </p>
 
 <p align="center">
-<img src="images/image4.png.jpeg" width="600">
+<img src="images/fd01.png.jpeg" width="600">
 </p>
 
 <p align="center">
-<img src="images/image5.png.jpeg" width="600">
+<img src="images/fd1.png.jpeg" width="600">
 </p>
 
-These plots illustrate:
+---
 
-- Predicted vs true RUL
-- Error distributions
-- PCA variance spectrum
-- Model prediction accuracy
+## FD002 Dataset Results
+
+<p align="center">
+<img src="images/fd002.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd02.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd2.png.jpeg" width="600">
+</p>
+
+---
+
+## FD003 Dataset Results
+
+<p align="center">
+<img src="images/fd003.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd03.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd3.png.jpeg" width="600">
+</p>
+
+---
+
+## FD004 Dataset Results
+
+<p align="center">
+<img src="images/fd004.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd04.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/fd4.png.jpeg" width="600">
+</p>
+
+---
+
+### Key Observations
+
+- PCA successfully reduces **high-dimensional sensor data**
+- SVR captures **nonlinear degradation patterns**
+- Predictions follow the **true RUL degradation trend**
+- The model generalizes across **all four C-MAPSS datasets**
 
 ---
 
@@ -896,19 +949,40 @@ MAE = (1/n) Σ |y_pred − y_true|
 R² = 1 − (SS_res / SS_tot)
 ```
 
-Additional NASA metrics:
+Additional evaluation measures may include:
 
 - **NASA Score**
 - **Accuracy within ±30 cycles**
 
 ---
 
-# 🚀 Key Observations
+# 🔮 Future Work
 
-- PCA successfully reduces **420-dimensional sensor data to ~40 components**
-- SVR captures nonlinear degradation patterns
-- The PCA + SVR combination provides **stable RUL predictions**
-- The model generalizes across **all C-MAPSS datasets**
+Potential improvements include:
+
+- Testing **deep learning models (CNN, LSTM, Attention networks)**
+- Deploying models for **real-time predictive maintenance**
+- Applying the method to other systems such as:
+  - Wind turbines
+  - Industrial machines
+  - Electric vehicle batteries
+- Studying the effect of **sensor noise and missing data**
+
+---
+
+# 📚 References
+
+Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008).  
+Damage propagation modeling for aircraft engine run-to-failure simulation.  
+NASA Ames Research Center.
+
+https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
+
+Ferreira, L., & Gonçalves, R. (2022).  
+Remaining Useful Life Estimation Using Deep Learning and the NASA C-MAPSS Dataset.  
+Scientific Reports, Springer Nature.
+
+https://www.nature.com
 
 ---
 
