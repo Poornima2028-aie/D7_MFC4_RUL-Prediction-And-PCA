@@ -4,15 +4,9 @@
 
 ---
 
-# 📌 Project Title
-
-**Attention-Based Remaining Useful Life Prediction for Aircraft Turbofan Engines using Deep Learning**
-
----
-
 # 👥 Team Members
 
-- **Poornima P** – cb.sc.u4aie24343  
+- **Poornima ** – cb.sc.u4aie24343  
 - **Ch. Sarvani Sruthi** – cb.sc.u4aie24311  
 - **Shri Manasa** – cb.sc.u4aie24356  
 - **Sowmya A** – cb.sc.u4aie24357  
