@@ -589,6 +589,357 @@ The proposed deep learning model shows strong performance in predicting Remainin
 
 ---
 
+# 🧠 PCA + SVR Model for Remaining Useful Life Prediction
+
+This project implements a **Principal Component Analysis (PCA) + Support Vector Regression (SVR)** pipeline to predict the **Remaining Useful Life (RUL)** of aircraft engines using the **NASA C-MAPSS dataset**.
+
+The pipeline converts raw multivariate sensor data into accurate RUL predictions using dimensionality reduction and regression modeling.
+
+---
+
+# ⚙️ Pipeline Overview
+
+The pipeline runs identically for all four C-MAPSS datasets:
+
+- **FD001**
+- **FD002**
+- **FD003**
+- **FD004**
+
+### Workflow
+
+Raw Sensor Data → Preprocessing → Sliding Window → PCA → SVR → RUL Prediction
+
+The complete workflow contains **10 processing steps**:
+
+1. Load raw dataset files  
+2. Generate RUL labels  
+3. Sensor selection  
+4. Z-score standardization  
+5. Sliding window feature creation  
+6. Principal Component Analysis (PCA)  
+7. Support Vector Regression (SVR) training  
+8. Prediction and clipping  
+9. Evaluation metrics  
+10. Visualization of results
+
+---
+
+# 📊 Dataset Description
+
+Each row of the dataset contains **26 columns**.
+
+| Column | Description |
+|------|-------------|
+| 1 | Engine Unit ID |
+| 2 | Cycle Number |
+| 3–5 | Operational Settings |
+| 6–26 | Sensor Measurements (s1 – s21) |
+
+Example structure:
+
+```
+EngineID  Cycle  Op1  Op2  Op3  s1 s2 s3 ... s21
+```
+
+---
+
+# 🛠 RUL Label Generation
+
+The **Remaining Useful Life (RUL)** is calculated using a **piecewise linear degradation model**.
+
+### RUL Formula
+
+```
+RUL(t) = min(max_cycle_i − t , RUL_CAP)
+```
+
+Where:
+
+- `max_cycle_i` = final cycle for engine *i*
+- `t` = current cycle
+- `RUL_CAP = 125`
+
+### Example
+
+| Cycle | RUL |
+|------|-----|
+| 1 | 125 |
+| 75 | 125 |
+| 76 | 124 |
+| 150 | 50 |
+| 200 | 0 |
+
+This prevents unrealistic RUL values early in the engine life.
+
+---
+
+# 📉 Principal Component Analysis (PCA)
+
+<p align="center">
+<img src="images/image1.png.jpeg" width="600">
+</p>
+
+PCA reduces **high-dimensional sensor data** into a smaller set of informative features while preserving the majority of the variance.
+
+### Dimensionality Reduction
+
+```
+420 Features
+   ↓
+PCA
+   ↓
+~40 Principal Components
+```
+
+This reduces noise and improves model training efficiency.
+
+---
+
+## Step 1 — Data Centering
+
+The dataset must be centered before PCA.
+
+### Mean Calculation
+
+```
+μ_j = (1/N) Σ X_ij
+```
+
+Centered matrix:
+
+```
+X_centered = X − μ
+```
+
+Centering ensures that PCA captures **true variance around the mean**.
+
+---
+
+## Step 2 — Covariance Matrix
+
+The covariance matrix describes how features vary together.
+
+### Formula
+
+```
+C = (1 / (N − 1)) * Xcᵀ Xc
+```
+
+Properties:
+
+- Symmetric matrix
+- Eigenvalues ≥ 0
+- Captures correlation between sensors
+
+---
+
+## Step 3 — Eigen Decomposition
+
+PCA finds directions of maximum variance using eigenvectors.
+
+### Eigenvalue Equation
+
+```
+C v = λ v
+```
+
+Where:
+
+- `v` = eigenvector
+- `λ` = eigenvalue
+
+The covariance matrix can be decomposed as:
+
+```
+C = V D Vᵀ
+```
+
+- **V** → eigenvectors  
+- **D** → eigenvalues
+
+---
+
+## Step 4 — Explained Variance
+
+Each eigenvalue represents the variance captured by that component.
+
+### Explained Variance
+
+```
+Explained_i = (λ_i / Σλ) × 100%
+```
+
+Example:
+
+| PC | Variance |
+|----|---------|
+| PC1 | 75.67% |
+| PC2 | 20.26% |
+| PC3 | 4.07% |
+
+---
+
+## Step 5 — Selecting Principal Components
+
+Components are selected based on **cumulative explained variance**.
+
+### Rule
+
+```
+k = min{ j : cumulative_variance ≥ 95% }
+```
+
+This ensures that **95% of the original information is retained**.
+
+---
+
+## Step 6 — Data Projection
+
+After selecting the top components, the dataset is projected into the reduced feature space.
+
+### Projection Formula
+
+```
+Z = X_centered · W
+```
+
+Where:
+
+- `W` = selected eigenvectors
+- `Z` = reduced dimensional representation
+
+In the C-MAPSS dataset:
+
+```
+420 Dimensions → ~40 Principal Components
+```
+
+---
+
+# 🤖 Support Vector Regression (SVR)
+
+After PCA, the reduced features are used to train a **Support Vector Regression model**.
+
+<p align="center">
+<img src="images/image2.png.jpeg" width="600">
+</p>
+
+SVR learns a function that predicts Remaining Useful Life.
+
+### SVR Objective
+
+SVR tries to find a function:
+
+```
+f(x) = wᵀx + b
+```
+
+while minimizing prediction error within an **ε-insensitive region**.
+
+---
+
+### RBF Kernel
+
+The model uses a **Radial Basis Function kernel**:
+
+```
+K(x_i , x_j) = exp(-γ ||x_i - x_j||²)
+```
+
+This allows SVR to capture **nonlinear relationships in engine degradation**.
+
+---
+
+# 📈 Results and Visualization
+
+<p align="center">
+<img src="images/image3.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image4.png.jpeg" width="600">
+</p>
+
+<p align="center">
+<img src="images/image5.png.jpeg" width="600">
+</p>
+
+These plots illustrate:
+
+- Predicted vs true RUL
+- Error distributions
+- PCA variance spectrum
+- Model prediction accuracy
+
+---
+
+# 📊 Evaluation Metrics
+
+The model performance is evaluated using:
+
+### RMSE
+
+```
+RMSE = sqrt( (1/n) Σ (y_pred − y_true)² )
+```
+
+### MAE
+
+```
+MAE = (1/n) Σ |y_pred − y_true|
+```
+
+### R² Score
+
+```
+R² = 1 − (SS_res / SS_tot)
+```
+
+Additional NASA metrics:
+
+- **NASA Score**
+- **Accuracy within ±30 cycles**
+
+---
+
+# 🚀 Key Observations
+
+- PCA successfully reduces **420-dimensional sensor data to ~40 components**
+- SVR captures nonlinear degradation patterns
+- The PCA + SVR combination provides **stable RUL predictions**
+- The model generalizes across **all C-MAPSS datasets**
+
+---
+
+# 🔮 Future Work
+
+Potential improvements include:
+
+- Testing **deep learning models (CNN/LSTM/Attention)**
+- Real-time **predictive maintenance deployment**
+- Applying the approach to:
+  - Wind turbines
+  - Industrial machines
+  - Electric vehicle batteries
+- Investigating robustness under **sensor noise**
+
+---
+
+# 📚 References
+
+Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008).  
+Damage propagation modeling for aircraft engine run-to-failure simulation.  
+NASA Ames Research Center.
+
+https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/
+
+Ferreira, L., & Gonçalves, R. (2022).  
+Remaining Useful Life Estimation Using Deep Learning and the NASA C-MAPSS Dataset.  
+Scientific Reports, Springer Nature.
+
+https://www.nature.com
+
 # 🔮 Future Plans
 
 Future improvements include:
