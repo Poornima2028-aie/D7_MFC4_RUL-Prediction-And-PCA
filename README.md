@@ -950,6 +950,23 @@ Additional evaluation measures may include:
 
 
 ---
+## Execution Time and Platform
+
+Platform Used: Personal Laptop  
+Hardware: Intel i7 CPU, 16GB RAM  
+Programming Language: MATLAB
+
+Execution time was measured using MATLAB tic and toc commands.
+
+Total execution time (FD001–FD004 combined): 132.48 seconds.
+
+## Execution Time and Platform
+
+Platform Used: Personal Laptop
+Hardware: CPU (Intel i5 / i7)
+Programming Language: Python
+
+Total execution time: ~145 seconds
 
 # 🔮 Future Plans
 
