@@ -34,16 +34,29 @@ By analyzing degradation patterns in sensor data, the model predicts the **numbe
 
 # 💡 Motivation / Why the Project is Interesting
 
-Aircraft engine maintenance is highly critical and expensive. Traditional maintenance strategies either replace components **too early** or **too late**, which leads to increased operational costs or safety risks.
+Aircraft engines are complex systems operating under extreme conditions, where unexpected failures can lead to serious safety risks and high maintenance costs. Traditional maintenance strategies such as **scheduled maintenance** or **reactive repairs** are inefficient because they either replace components too early or fail to prevent sudden breakdowns.
 
-This project is interesting because it:
+This project is particularly interesting because it addresses these challenges using **data-driven predictive maintenance**.
 
-- Uses **real-world NASA engine degradation data**
-- Applies **deep learning models to multivariate time-series sensor data**
-- Learns degradation patterns automatically from sensor measurements
-- Uses an **attention mechanism** to identify the most important degradation periods
+### 🔍 Why this project stands out:
 
-By learning degradation behaviour directly from the data, the system can predict engine failure in advance and support **predictive maintenance strategies**.
+- ✈️ Works on **real-world NASA C-MAPSS turbofan engine dataset**
+- 📊 Handles **high-dimensional multivariate time-series sensor data**
+- 🧠 Combines **deep learning (CNN + BiLSTM + Attention)** with **classical ML (PCA + SVR)**
+- 🎯 Learns **hidden degradation patterns automatically** without manual feature engineering
+- 👁️ Uses **attention mechanism** to identify critical time steps affecting engine health
+- ⚡ Improves **prediction accuracy and interpretability**
+
+### 🚀 Real-World Impact
+
+By accurately predicting the **Remaining Useful Life (RUL)**:
+
+- Maintenance can be performed **exactly when needed**
+- Reduces **unexpected failures and downtime**
+- Optimizes **maintenance cost and resource usage**
+- Enhances **aircraft safety and reliability**
+
+This project bridges the gap between **theoretical machine learning models** and **real-world industrial applications**, making it highly relevant in the field of **AI-driven predictive maintenance**.
 
 ---
 
