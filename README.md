@@ -3,15 +3,19 @@
 ## ✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines
 
 ---
-
-# 👥 Team Members
-
-- **Poornima ** – cb.sc.u4aie24343  
-- **Ch. Sarvani Sruthi** – cb.sc.u4aie24311  
-- **Shri Manasa** – cb.sc.u4aie24356  
-- **Sowmya A** – cb.sc.u4aie24357  
+# Amrita Vishwa Vidyapeetham  
+### Team D7  
 
 ---
+
+## 👥 Team Members
+
+| Member                  | Roll No.            |
+|------------------------|--------------------|
+| Poornima               | CB.SC.U4AIE24343   |
+| Ch. Sarvani Sruthi     | CB.SC.U4AIE24311   |
+| Shri Manasa            | CB.SC.U4AIE24356   |
+| Sowmya A               | CB.SC.U4AIE24357   |
 
 # 🎯 Objective
 
