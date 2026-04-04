@@ -358,7 +358,7 @@ Interpretation:
 Top ranked sensors are selected for training.
 
 <p align="center">
-<img src="images/image14.png.jpeg" width="500">
+<img src="images/image14.png.jpeg" width="400">
 </p>
 
 ---
@@ -530,55 +530,55 @@ The output is the **predicted number of cycles remaining before engine failure**
 # 📊 Results and Discussion
 
 <p align="center">
-<img src="images/image1.png.jpeg" width="600">
+<img src="images/image1.png.jpeg" width="400">
 </p>
 
 <p align="center">
-<img src="images/image2.png.jpeg" width="600">
+<img src="images/image2.png.jpeg" width="400">
 </p>
 
 ## Python Results
 
 <p align="center">
-<img src="images/image4.png.jpeg" width="600">
+<img src="images/image4.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image5.png.jpeg" width="600">
+<img src="images/image5.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image6.png.jpeg" width="600">
+<img src="images/image6.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image7.png.jpeg" width="600">
+<img src="images/image7.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image8.png.jpeg" width="600">
+<img src="images/image8.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image9.png.jpeg" width="600">
+<img src="images/image9.png.jpeg" width="500">
 </p>
 
 ## MATLAB Results
 
 <p align="center">
-<img src="images/image10.png.jpeg" width="600">
+<img src="images/image10.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image11.png.jpeg" width="600">
+<img src="images/image11.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image12.png.jpeg" width="600">
+<img src="images/image12.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/image13.png.jpeg" width="600">
+<img src="images/image13.png.jpeg" width="500">
 </p>
 
 The proposed deep learning model shows strong performance in predicting Remaining Useful Life.
@@ -868,15 +868,15 @@ Key findings include:
 ## FD001 Dataset Results
 
 <p align="center">
-<img src="images/fd001.png.jpeg" width="600">
+<img src="images/fd001.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd01.png.jpeg" width="600">
+<img src="images/fd01.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd1.png.jpeg" width="600">
+<img src="images/fd1.png.jpeg" width="500">
 </p>
 
 ---
@@ -884,15 +884,15 @@ Key findings include:
 ## FD002 Dataset Results
 
 <p align="center">
-<img src="images/fd002.png.jpeg" width="600">
+<img src="images/fd002.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd02.png.jpeg" width="600">
+<img src="images/fd02.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd2.png.jpeg" width="600">
+<img src="images/fd2.png.jpeg" width="500">
 </p>
 
 ---
@@ -900,15 +900,15 @@ Key findings include:
 ## FD003 Dataset Results
 
 <p align="center">
-<img src="images/fd003.png.jpeg" width="600">
+<img src="images/fd003.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd03.png.jpeg" width="600">
+<img src="images/fd03.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd3.png.jpeg" width="600">
+<img src="images/fd3.png.jpeg" width="500">
 </p>
 
 ---
@@ -916,15 +916,15 @@ Key findings include:
 ## FD004 Dataset Results
 
 <p align="center">
-<img src="images/fd004.png.jpeg" width="600">
+<img src="images/fd004.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd04.png.jpeg" width="600">
+<img src="images/fd04.png.jpeg" width="500">
 </p>
 
 <p align="center">
-<img src="images/fd4.png.jpeg" width="600">
+<img src="images/fd4.png.jpeg" width="500">
 </p>
 
 ---
