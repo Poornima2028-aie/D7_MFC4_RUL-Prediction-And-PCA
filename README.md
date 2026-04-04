@@ -358,7 +358,7 @@ Interpretation:
 Top ranked sensors are selected for training.
 
 <p align="center">
-<img src="images/image14.png.jpeg" width="600">
+<img src="images/image14.png.jpeg" width="500">
 </p>
 
 ---
