@@ -484,8 +484,8 @@ This allows the model to capture **complete temporal context**.
 ---
 
 <p align="center">
-  <img src="images/bilstm.png.jpeg" width="45%" />
-  <img src="images/bilstm2.png.jpeg" width="45%" />
+  <img src="images/bilstm.png.jpeg" width="25%" />
+  <img src="images/bilstm2.png.jpeg" width="25%" />
 
 
 # 3️⃣ Attention Mechanism
