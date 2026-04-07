@@ -1,7 +1,7 @@
 # 🚀 D7_MFC4_RUL Prediction
 
 <p align="center">
-  <img src="images/amrita_logo.jpeg" width="500">
+  <img src="images/amrita_logo.jpeg" width="700">
 </p>
 
 ## ✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines
