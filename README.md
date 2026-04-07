@@ -8,20 +8,19 @@
 ✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines
 </h1>
 
----
-# Amrita Vishwa Vidyapeetham  
+---  
 ### Team D7  
 
 ---
 
 ## 👥 Team Members
 
-| Member                  | Roll No.            |
-|------------------------|--------------------|
-| Poornima               | CB.SC.U4AIE24343   |
-| Ch. Sarvani Sruthi     | CB.SC.U4AIE24311   |
-| Shri Manasa            | CB.SC.U4AIE24356   |
-| Sowmya A               | CB.SC.U4AIE24357   |
+| Name | Roll No | Course Name | Program Name |
+|------|--------|------------|--------------|
+| Poornima | CB.SC.U4AIE24343 | B.Tech CSE (AI) | Undergraduate |
+| Ch. Sarvani Sruthi | CB.SC.U4AIE24311 | B.Tech CSE (AI) | Undergraduate |
+| Shri Manasa | CB.SC.U4AIE24356 | B.Tech CSE (AI) | Undergraduate |
+| Sowmya A | CB.SC.U4AIE24357 | B.Tech CSE (AI) | Undergraduate |
 
 
 | S.No | Section | Link |
