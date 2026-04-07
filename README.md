@@ -1,4 +1,4 @@
-# 🚀 D7_MFC4_RUL Prediction
+# MFC4_D7_RUL Prediction
 
 <p align="center">
   <img src="images/amrita_logo.jpeg" width="700">
