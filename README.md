@@ -17,6 +17,48 @@
 | Shri Manasa            | CB.SC.U4AIE24356   |
 | Sowmya A               | CB.SC.U4AIE24357   |
 
+
+| S.No | Section | Link |
+|------|--------|------|
+| 1 | Abstract | [Go](#abstract) |
+| 2 | Introduction | [Go](#introduction) |
+| 3 | Methodology | [Go](#methodology) |
+| 3.1 | Data Preprocessing | [Go](#data-preprocessing) |
+| 3.2 | Sensor Selection | [Go](#sensor-selection) |
+| 3.2.1 | Monotonicity | [Go](#monotonicity) |
+| 3.2.2 | Averaging Across Engines | [Go](#averaging-across-engines) |
+| 3.2.3 | Prognosability | [Go](#prognosability) |
+| 3.2.4 | Final Sensor Scoring | [Go](#final-sensor-scoring) |
+| 3.3 | Sliding Window Technique | [Go](#sliding-window-technique) |
+| 3.4 | Deep Learning Model | [Go](#deep-learning-model) |
+| 3.4.1 | CNN | [Go](#convolutional-neural-network-cnn) |
+| 3.4.2 | BiLSTM | [Go](#bidirectional-lstm-bilstm) |
+| 3.4.3 | Attention Mechanism | [Go](#attention-mechanism) |
+| 3.4.4 | Fully Connected Layer | [Go](#fully-connected-layer) |
+| 4 | Dataset Description | [Go](#dataset-description) |
+| 5 | Results and Discussion | [Go](#results-and-discussion) |
+| 6 | PCA + SVR Model | [Go](#pca--svr-model) |
+| 6.1 | Pipeline Overview | [Go](#pipeline-overview) |
+| 6.2 | RUL Label Generation | [Go](#rul-label-generation) |
+| 6.3 | Principal Component Analysis (PCA) | [Go](#principal-component-analysis-pca) |
+| 6.3.1 | Data Centering | [Go](#data-centering) |
+| 6.3.2 | Covariance Matrix | [Go](#covariance-matrix) |
+| 6.3.3 | Eigen Decomposition | [Go](#eigen-decomposition) |
+| 6.3.4 | Explained Variance | [Go](#explained-variance) |
+| 6.3.5 | Selecting Principal Components | [Go](#selecting-principal-components) |
+| 6.3.6 | Data Projection | [Go](#data-projection) |
+| 6.4 | Support Vector Regression (SVR) | [Go](#support-vector-regression-svr) |
+| 7 | Evaluation Metrics | [Go](#evaluation-metrics) |
+| 8 | Execution Time and Platform | [Go](#execution-time-and-platform) |
+| 9 | Future Work | [Go](#future-work) |
+| 10 | Conclusion | [Go](#conclusion) |
+| 11 | References | [Go](#references) |
+
+
+# Abstract
+
+This project focuses on predicting the Remaining Useful Life (RUL) of aircraft turbofan engines using multivariate time-series sensor data from the NASA C-MAPSS dataset. A hybrid deep learning model combining CNN, BiLSTM, and Attention mechanisms is proposed to capture both local and long-term degradation patterns. Additionally, a classical PCA + SVR pipeline is implemented for comparison. Experimental results demonstrate that the proposed model accurately predicts RUL, enabling predictive maintenance, reducing downtime, and improving operational safety.
+
 # 🎯 Objective
 
 The objective of this project is to predict the **Remaining Useful Life (RUL)** of aircraft turbofan engines using **multivariate time-series sensor data**.
