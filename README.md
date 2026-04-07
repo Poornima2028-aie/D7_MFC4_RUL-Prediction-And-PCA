@@ -22,6 +22,8 @@
 | Shri Manasa | CB.SC.U4AIE24356 | B.Tech CSE (AI) | Undergraduate |
 | Sowmya A | CB.SC.U4AIE24357 | B.Tech CSE (AI) | Undergraduate |
 
+---
+
 
 | S.No | Section | Link |
 |------|--------|------|
