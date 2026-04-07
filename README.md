@@ -4,7 +4,9 @@
   <img src="images/amrita_logo.jpeg" width="700">
 </p>
 
-## ✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines
+<h1 align="center">
+✈️ Attention-Based Remaining Useful Life (RUL) Prediction for Aircraft Turbofan Engines
+</h1>
 
 ---
 # Amrita Vishwa Vidyapeetham  
