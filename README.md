@@ -23,7 +23,7 @@
 | Sowmya A | CB.SC.U4AIE24357 | B.Tech CSE (AI) | Undergraduate |
 
 ---
-#Table Of Content
+Table Of Content
 
 | S.No | Section | Link |
 |------|--------|------|
